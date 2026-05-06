@@ -16,7 +16,7 @@ const About = () => {
             <h2 className="text-sm font-bold tracking-widest text-primary-500 uppercase">Legacy of Excellence</h2>
             <h3 className="text-4xl md:text-5xl font-bold leading-tight">Bridging Academic Innovation & Clinical Reality</h3>
             <p className="text-slate-400 text-lg leading-relaxed">
-              Founded by <strong>Dr. Farhad Rezaee</strong>, BIO-CLINICA BIOMARKERS represents the culmination of two decades of ground-breaking research in Molecular Clinical Screening. 
+              Founded by <strong>Dr. Farhad Rezaee</strong>, BIO-CLINICA BIOMARKERS represents the culmination of two decades of ground-breaking research in Molecular Clinical Screening.
             </p>
             <p className="text-slate-400 text-lg leading-relaxed">
               Our mission is clear: to bridge the critical gap between academic discovery and patient care. By leveraging high-throughput proteomics and genomics, we identify "Clinical Biomarkers" that enable early detection and personalized treatment strategies.
@@ -32,7 +32,7 @@ const About = () => {
               </div>
             </div>
           </motion.div>
-          
+
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -42,9 +42,9 @@ const About = () => {
           >
             <div className="glass-card p-2">
               <div className="aspect-[4/5] rounded-lg overflow-hidden relative">
-                <img 
-                  src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=1000" 
-                  alt="Standard Medical Laboratory" 
+                <img
+                  src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=1000"
+                  alt="Standard Medical Laboratory"
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#050a14] via-[#050a14]/20 to-transparent flex items-end p-8">
