@@ -1,8 +1,40 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, Phone, MapPin, Globe, ArrowRight } from 'lucide-react';
 
 const Contact = () => {
+  const [status, setStatus] = useState('idle');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setStatus('submitting');
+    
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData.entries());
+    data.formName = 'Contact Form';
+
+    try {
+      const response = await fetch('http://localhost:5000/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      
+      if (response.ok) {
+        setStatus('success');
+        e.target.reset();
+        setTimeout(() => setStatus('idle'), 3000);
+      } else {
+        setStatus('error');
+        setTimeout(() => setStatus('idle'), 3000);
+      }
+    } catch (error) {
+      console.error('Submission error:', error);
+      setStatus('error');
+      setTimeout(() => setStatus('idle'), 3000);
+    }
+  };
+
   return (
     <footer id="contact" className="pt-20 pb-10 bg-slate-900/50 border-t border-slate-800">
       <div className="container mx-auto px-6">
@@ -40,7 +72,7 @@ const Contact = () => {
                 </div>
                 <div>
                   <p className="text-slate-200 font-semibold">Email Inquiry</p>
-                  <p className="text-slate-400 text-sm">Abbas@clinicabiomarkers.com</p>
+                  <a href="mailto:Abbas@clinicabiomarkers.com" className="text-slate-400 text-sm hover:text-primary-400 transition-colors block">Abbas@clinicabiomarkers.com</a>
                 </div>
               </div>
             </div>
@@ -48,15 +80,16 @@ const Contact = () => {
           
           <div className="glass-card p-10 relative overflow-hidden">
             <h4 className="text-2xl font-bold mb-6">Send a Message</h4>
-            <form className="space-y-4">
+            <form className="space-y-4" onSubmit={handleSubmit}>
               <div className="grid md:grid-cols-2 gap-4">
-                <input type="text" placeholder="Your Name" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-primary-500 transition-all" />
-                <input type="email" placeholder="Email Address" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-primary-500 transition-all" />
+                <input type="text" name="name" required placeholder="Your Name" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-primary-500 transition-all" />
+                <input type="email" name="email" required placeholder="Email Address" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-primary-500 transition-all" />
               </div>
-              <input type="text" placeholder="Subject" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-primary-500 transition-all" />
-              <textarea placeholder="Message" rows="4" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-primary-500 transition-all"></textarea>
-              <button className="w-full bg-primary-600 hover:bg-primary-500 text-white font-bold py-4 rounded-xl transition-all flex items-center justify-center gap-2">
-                Send Message <ArrowRight size={18} />
+              <input type="text" name="subject" required placeholder="Subject" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-primary-500 transition-all" />
+              <textarea name="message" required placeholder="Message" rows="4" className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-primary-500 transition-all"></textarea>
+              <button disabled={status === 'submitting'} type="submit" className="w-full bg-primary-600 hover:bg-primary-500 text-white font-bold py-4 rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50">
+                {status === 'submitting' ? 'Sending...' : status === 'success' ? 'Message Sent!' : status === 'error' ? 'Error Sending' : 'Send Message'} 
+                {status === 'idle' && <ArrowRight size={18} />}
               </button>
             </form>
           </div>

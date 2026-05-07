@@ -51,6 +51,38 @@ const FAQItem = ({ faq }) => {
 };
 
 const ContactPage = () => {
+  const [status, setStatus] = useState('idle');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setStatus('submitting');
+    
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData.entries());
+    data.formName = 'Formal Request Form';
+
+    try {
+      const response = await fetch('http://localhost:5000/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      
+      if (response.ok) {
+        setStatus('success');
+        e.target.reset();
+        setTimeout(() => setStatus('idle'), 3000);
+      } else {
+        setStatus('error');
+        setTimeout(() => setStatus('idle'), 3000);
+      }
+    } catch (error) {
+      console.error('Submission error:', error);
+      setStatus('error');
+      setTimeout(() => setStatus('idle'), 3000);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#050a14] pt-32 pb-20 px-6">
       <div className="container mx-auto max-w-6xl">
@@ -81,7 +113,7 @@ const ContactPage = () => {
                 <Mail size={28} />
               </div>
               <h3 className="text-2xl font-bold">Direct Inquiry</h3>
-              <p className="text-slate-400">Abbas@clinicabiomarkers.com</p>
+              <a href="mailto:Abbas@clinicabiomarkers.com" className="text-slate-400 hover:text-primary-400 transition-colors block">Abbas@clinicabiomarkers.com</a>
               <p className="text-slate-400">+1 647.868.7269</p>
             </div>
           </motion.div>
@@ -93,35 +125,36 @@ const ContactPage = () => {
             className="lg:col-span-2 glass-card p-10 md:p-12"
           >
             <h2 className="text-3xl font-bold mb-10">Send a Formal Request</h2>
-            <form className="space-y-6">
+            <form className="space-y-6" onSubmit={handleSubmit}>
               <div className="grid md:grid-cols-2 gap-8">
                 <div className="space-y-3">
                   <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Full Name</label>
-                  <input type="text" className="w-full bg-white/5 border border-white/10 rounded-xl px-6 py-4 outline-none focus:border-primary-500 transition-all text-white" placeholder="John Doe" />
+                  <input type="text" name="name" required className="w-full bg-white/5 border border-white/10 rounded-xl px-6 py-4 outline-none focus:border-primary-500 transition-all text-white" placeholder="John Doe" />
                 </div>
                 <div className="space-y-3">
                   <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Email Address</label>
-                  <input type="email" className="w-full bg-white/5 border border-white/10 rounded-xl px-6 py-4 outline-none focus:border-primary-500 transition-all text-white" placeholder="john@example.com" />
+                  <input type="email" name="email" required className="w-full bg-white/5 border border-white/10 rounded-xl px-6 py-4 outline-none focus:border-primary-500 transition-all text-white" placeholder="john@example.com" />
                 </div>
               </div>
               
               <div className="space-y-3">
                 <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Project Inquiry Type</label>
-                <select className="w-full bg-white/5 border border-white/10 rounded-xl px-6 py-4 outline-none focus:border-primary-500 transition-all text-slate-300">
-                  <option className="bg-slate-900">Academic Collaboration</option>
-                  <option className="bg-slate-900">Pharma Service</option>
-                  <option className="bg-slate-900">Clinical Validation</option>
-                  <option className="bg-slate-900">General Information</option>
+                <select name="inquiryType" required className="w-full bg-white/5 border border-white/10 rounded-xl px-6 py-4 outline-none focus:border-primary-500 transition-all text-slate-300">
+                  <option className="bg-slate-900" value="Academic Collaboration">Academic Collaboration</option>
+                  <option className="bg-slate-900" value="Pharma Service">Pharma Service</option>
+                  <option className="bg-slate-900" value="Clinical Validation">Clinical Validation</option>
+                  <option className="bg-slate-900" value="General Information">General Information</option>
                 </select>
               </div>
 
               <div className="space-y-3">
                 <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Message</label>
-                <textarea className="w-full bg-white/5 border border-white/10 rounded-xl px-6 py-4 outline-none focus:border-primary-500 transition-all h-40 text-white" placeholder="Provide a brief summary of your inquiry..."></textarea>
+                <textarea name="message" required className="w-full bg-white/5 border border-white/10 rounded-xl px-6 py-4 outline-none focus:border-primary-500 transition-all h-40 text-white" placeholder="Provide a brief summary of your inquiry..."></textarea>
               </div>
 
-              <button className="w-full bg-primary-600 hover:bg-primary-500 text-white font-bold py-5 rounded-xl transition-all flex items-center justify-center gap-3 shadow-2xl shadow-primary-500/30">
-                Send Message <ArrowRight size={20} />
+              <button disabled={status === 'submitting'} type="submit" className="w-full bg-primary-600 hover:bg-primary-500 text-white font-bold py-5 rounded-xl transition-all flex items-center justify-center gap-3 shadow-2xl shadow-primary-500/30 disabled:opacity-50">
+                {status === 'submitting' ? 'Sending...' : status === 'success' ? 'Message Sent!' : status === 'error' ? 'Error Sending' : 'Send Message'} 
+                {status === 'idle' && <ArrowRight size={20} />}
               </button>
             </form>
           </motion.div>

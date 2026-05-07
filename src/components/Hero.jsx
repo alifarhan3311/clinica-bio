@@ -55,9 +55,9 @@ const Hero = () => {
           <button className="w-full sm:w-auto bg-primary-600 hover:bg-primary-500 text-white px-8 py-4 rounded-xl font-bold transition-all shadow-xl shadow-primary-500/20">
             Explore Our Research
           </button>
-          <button className="w-full sm:w-auto glass-card hover:bg-white/10 text-white px-8 py-4 rounded-xl font-bold transition-all">
+          <a href="mailto:farhad@clinicalbiomarker.com" className="w-full sm:w-auto glass-card hover:bg-white/10 text-white px-8 py-4 rounded-xl font-bold transition-all text-center">
             Contact Dr. Rezaee
-          </button>
+          </a>
         </motion.div>
       </div>
       
